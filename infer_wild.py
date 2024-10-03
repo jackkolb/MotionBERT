@@ -35,6 +35,7 @@ if torch.cuda.is_available():
 
 print('Loading checkpoint', opts.evaluate)
 checkpoint = torch.load(opts.evaluate, map_location=lambda storage, loc: storage)
+checkpoint['model_pos'] = {k.replace('module.', ''): v for k, v in checkpoint['model_pos'].items()}  # remove the module. prefix to match the checkpoint (likely made with DataParallel) with the backbone
 model_backbone.load_state_dict(checkpoint['model_pos'], strict=True)
 model_pos = model_backbone
 model_pos.eval()
